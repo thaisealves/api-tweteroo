@@ -11,17 +11,36 @@ const tweets = [];
 app.post("/sign-up", (req, res) => {
   avatar = req.body.avatar;
   username = req.body.username;
-  users.push({ username, avatar });
-  console.log(users);
-  res.send("OK");
+  if (users.find((user) => user.username === username) !== undefined) {
+    res.status(400).send("Usuário já utilizado");
+  } else if (avatar.length === 0 || username.length === 0) {
+    console.log(avatar);
+    res.status(400).send("Todos os campos são obrigatórios!");
+  } else if (!isImgValid()) {
+    res
+      .status(400)
+      .send("A URL do avatar deve estar em uma extensão de imagem!");
+  } else {
+    users.push({ username, avatar });
+    console.log(users);
+    res.send("OK");
+  }
 });
+
+function isImgValid() {
+  return avatar.match(/\.(jpeg|jpg|gif|png)$/) != null;
+}
 
 app.post("/tweets", (req, res) => {
   username = req.body.username;
+  const tweet = req.body.tweet;
   const sameUser = users.find((el) => el.username === username);
-  tweets.unshift({ username, avatar: sameUser.avatar, tweet: req.body.tweet });
-  res.send("OK");
-  console.log(tweets);
+  if (tweet.length === 0) {
+    res.status(400).send("Todos os campos são obrigatórios!");
+  } else {
+    tweets.unshift({ username, avatar: sameUser.avatar, tweet });
+    res.send("OK");
+  }
 });
 
 app.get("/tweets", (req, res) => {
