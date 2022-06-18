@@ -23,7 +23,7 @@ app.post("/sign-up", (req, res) => {
   } else {
     users.push({ username, avatar });
     console.log(users);
-    res.send("OK");
+    res.status(201).send("OK");
   }
 });
 
@@ -39,7 +39,7 @@ app.post("/tweets", (req, res) => {
     res.status(400).send("Todos os campos são obrigatórios!");
   } else {
     tweets.unshift({ username, avatar: sameUser.avatar, tweet });
-    res.send("OK");
+    res.status(201).send("OK");
   }
 });
 
